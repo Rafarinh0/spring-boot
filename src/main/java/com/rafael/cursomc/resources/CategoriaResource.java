@@ -46,6 +46,7 @@ public class CategoriaResource {
 	@RequestMapping(method=RequestMethod.POST)//anotaçao do metodo
 	public ResponseEntity<Void> insert(@Valid @RequestBody CategoriaDTO objDTO){//faz o JSON ser convertido pra objeto Java automaticamente
 		Categoria obj = service.fromDTO(objDTO); //o Valid faz o objeto ser validado
+		obj = service.insert(obj);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
 				.path("/{id}").buildAndExpand(obj.getId()).toUri();
 		return ResponseEntity.created(uri).build();//created gera o codigo 201 e recebe a uri como argumento

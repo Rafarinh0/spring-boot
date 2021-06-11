@@ -1,5 +1,6 @@
 package com.rafael.cursomc.resources;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.rafael.cursomc.domain.Cliente;
 import com.rafael.cursomc.dto.ClienteDTO;
+import com.rafael.cursomc.dto.ClienteNewDTO;
 import com.rafael.cursomc.services.ClienteService;
 
 @RestController
@@ -38,6 +41,15 @@ public class ClienteResource {
 		Cliente object = service.find(id);
 		
 		return ResponseEntity.ok().body(object);
+	}
+	
+	@RequestMapping(method=RequestMethod.POST)//anotaçao do metodo
+	public ResponseEntity<Void> insert(@Valid @RequestBody ClienteNewDTO objDTO){//faz o JSON ser convertido pra objeto Java automaticamente
+		Cliente obj = service.fromDTO(objDTO); //o Valid faz o objeto ser validado
+		obj = service.insert(obj);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+				.path("/{id}").buildAndExpand(obj.getId()).toUri();
+		return ResponseEntity.created(uri).build();//created gera o codigo 201 e recebe a uri como argumento
 	}
 	
 	@RequestMapping(value = "/{id}", method=RequestMethod.PUT)
